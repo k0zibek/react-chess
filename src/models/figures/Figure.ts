@@ -33,5 +33,7 @@ export class Figure {
 		if (target.figure?.name === FigureNames.KING) return false;
 		return true;
 	}
-	// moveFigure(target: Cell) {}
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	moveFigure(_target: Cell) {}
 }
