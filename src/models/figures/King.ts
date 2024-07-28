@@ -11,13 +11,19 @@ export class King extends Figure {
 		this.name = FigureNames.KING;
 	}
 
+	isKingUnderAttack(target: Cell): boolean {
+		if (!this.cell.isEmptyVertical(target)) return true;
+		if (!this.cell.isEmptyHorizontal(target)) return true;
+		if (!this.cell.isEmptyDiagonal(target)) return true;
+		return false;
+	}
+
 	canMove(target: Cell): boolean {
 		if (!super.canMove(target)) return false;
-		// Проверка, что король может двигаться только на одну клетку в любом направлении
 		const dx = Math.abs(target.x - this.cell.x);
 		const dy = Math.abs(target.y - this.cell.y);
+		// if ((dx === 1 && dy === 2) || (dx === 2 && dy === 1)) return false;
 
-		// Король может двигаться на одну клетку в любом направлении
 		return dx <= 1 && dy <= 1;
 	}
 }
