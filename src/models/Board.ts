@@ -28,7 +28,11 @@ export class Board {
 		}
 	}
 
-	public getCopyBoard(): Board {
+	/**
+	 * Новый объект доски с теми же ссылками на клетки и съеденные фигуры.
+	 * Нужен только чтобы обновить React state после мутаций поля; это не копия позиции.
+	 */
+	public cloneBoardShell(): Board {
 		const newBoard = new Board();
 		newBoard.cells = this.cells;
 		newBoard.lostBlackFigures = this.lostBlackFigures;

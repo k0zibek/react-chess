@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BoardComponent from './components/BoardComponent';
 import './styles/App.css';
 import { Board } from './models/Board';
@@ -13,18 +13,17 @@ function App() {
 	const [blackPlayer] = useState(new Player(Colors.BLACK));
 	const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
 
-	useEffect(() => {
-		setCurrentPlayer(whitePlayer);
-		restart();
-	}, []);
-
-	function restart() {
+	const restart = useCallback(() => {
 		const newBoard = new Board();
 		newBoard.initCells();
 		newBoard.addFigures();
 		setBoard(newBoard);
 		setCurrentPlayer(whitePlayer);
-	}
+	}, [whitePlayer]);
+
+	useEffect(() => {
+		restart();
+	}, [restart]);
 
 	function swapPlayer() {
 		setCurrentPlayer(currentPlayer?.color === Colors.WHITE ? blackPlayer : whitePlayer);
