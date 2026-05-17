@@ -15,9 +15,9 @@ describe('критические позиции', () => {
 
 		const game = new ChessGame(position);
 		const queenCell = position.board.getCell(1, 5);
-		const mateMove = game.selectLegalMoves(queenCell).find(
-			(move) => move.to.x === 1 && move.to.y === 6,
-		);
+		const mateMove = game
+			.selectLegalMoves(queenCell)
+			.find((move) => move.to.x === 1 && move.to.y === 6);
 
 		expect(mateMove).toBeDefined();
 		expect(game.playMove(mateMove!)).toBe(true);

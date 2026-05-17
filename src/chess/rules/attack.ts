@@ -5,12 +5,7 @@ import { getOpponent } from '../constants';
 import { Colors, FigureNames } from '../types';
 
 /** Проверяет, атакована ли клетка фигурами указанного цвета. */
-export function isSquareAttacked(
-	board: Board,
-	x: number,
-	y: number,
-	byColor: Colors,
-): boolean {
+export function isSquareAttacked(board: Board, x: number, y: number, byColor: Colors): boolean {
 	const target = board.getCell(x, y);
 	let attacked = false;
 	forEachCell(board, (cell) => {

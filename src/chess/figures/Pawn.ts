@@ -56,12 +56,7 @@ export class Pawn extends Figure {
 		}
 	}
 
-	private addCaptureMoves(
-		moves: Move[],
-		board: Board,
-		ctx: MoveContext,
-		direction: number,
-	): void {
+	private addCaptureMoves(moves: Move[], board: Board, ctx: MoveContext, direction: number): void {
 		for (const dx of [-1, 1]) {
 			const captureX = this.cell.x + dx;
 			const captureY = this.cell.y + direction;
@@ -82,9 +77,7 @@ export class Pawn extends Figure {
 
 	private createMovesTo(target: Cell): Move[] {
 		if (Move.isPromotionRank(this.color, target.y)) {
-			return PROMOTION_PIECES.map(
-				(piece) => new Move(this.cell, target, 'promotion', piece),
-			);
+			return PROMOTION_PIECES.map((piece) => new Move(this.cell, target, 'promotion', piece));
 		}
 		return [new Move(this.cell, target, 'normal')];
 	}

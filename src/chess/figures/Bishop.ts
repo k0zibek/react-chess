@@ -19,11 +19,8 @@ export class Bishop extends Figure {
 	}
 
 	getPseudoLegalMoves(ctx: MoveContext): Move[] {
-		return SlidingMover.getMoves(
-			this.cell,
-			ctx.board,
-			BISHOP_DIRECTIONS,
-			(target) => this.canTargetCell(target),
+		return SlidingMover.getMoves(this.cell, ctx.board, BISHOP_DIRECTIONS, (target) =>
+			this.canTargetCell(target),
 		);
 	}
 

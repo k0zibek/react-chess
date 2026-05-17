@@ -55,9 +55,9 @@ const BoardComponent: FC<BoardProps> = ({
 				timeWinner={timeWinner}
 			/>
 			<div
-				className='board'
-				role='grid'
-				aria-label='Шахматная доска'
+				className="board"
+				role="grid"
+				aria-label="Шахматная доска"
 				aria-rowcount={8}
 				aria-colcount={8}
 				onKeyDown={handleBoardKeyDown}

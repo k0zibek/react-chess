@@ -36,26 +36,26 @@ const PromotionModal: FC<PromotionModalProps> = ({ color, onSelect }) => {
 	}, [onSelect]);
 
 	return (
-		<div className='promotion-overlay' role='presentation'>
+		<div className="promotion-overlay" role="presentation">
 			<div
-				className='promotion-modal'
-				role='dialog'
-				aria-modal='true'
-				aria-labelledby='promotion-title'
+				className="promotion-modal"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="promotion-title"
 			>
-				<h3 id='promotion-title'>Выберите фигуру</h3>
-				<div className='promotion-options'>
+				<h3 id="promotion-title">Выберите фигуру</h3>
+				<div className="promotion-options">
 					{PROMOTION_PIECES.map((piece, index) => {
 						const logo = getFigureLogo(piece, color);
 						return (
 							<button
 								key={piece}
 								ref={index === 0 ? firstButtonRef : undefined}
-								className='promotion-btn'
+								className="promotion-btn"
 								onClick={() => onSelect(piece)}
 								aria-label={LABELS[piece]}
 							>
-								{logo && <img src={logo} alt='' aria-hidden='true' />}
+								{logo && <img src={logo} alt="" aria-hidden="true" />}
 							</button>
 						);
 					})}
