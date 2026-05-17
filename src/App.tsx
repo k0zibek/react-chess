@@ -11,9 +11,11 @@ function App() {
 		pendingPromotionMoves,
 		promotionColor,
 		isGameOver,
+		timeWinner,
 		isCellAvailable,
 		click,
 		handlePromotionSelect,
+		handleTimeExpired,
 		restart,
 	} = useChessGame();
 
@@ -22,6 +24,7 @@ function App() {
 			<Timer
 				currentTurn={snapshot.currentTurn}
 				isGameOver={isGameOver}
+				onTimeExpired={handleTimeExpired}
 				restart={restart}
 			/>
 			<BoardComponent
@@ -29,13 +32,14 @@ function App() {
 				selectedCell={selectedCell}
 				pendingPromotionMoves={pendingPromotionMoves}
 				promotionColor={promotionColor}
+				timeWinner={timeWinner}
 				isCellAvailable={isCellAvailable}
 				click={click}
 				handlePromotionSelect={handlePromotionSelect}
 			/>
 			<div>
-				<LostFigures title={'Черные фигуры'} figures={snapshot.board.lostBlackFigures} />
-				<LostFigures title={'Белые фигуры'} figures={snapshot.board.lostWhiteFigures} />
+				<LostFigures title='Съеденные чёрные' figures={snapshot.board.lostBlackFigures} />
+				<LostFigures title='Съеденные белые' figures={snapshot.board.lostWhiteFigures} />
 			</div>
 		</div>
 	);

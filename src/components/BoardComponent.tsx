@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import CellComponent from './CellComponent';
 import { PositionSnapshot } from '../chess/ChessGame';
 import { Cell } from '../chess/board/Cell';
+import { getColorLabel } from '../chess/colorLabels';
 import { Colors, FigureNames } from '../chess/types';
 import { Move } from '../chess/Move';
 import GameStatusBar from './GameStatusBar';
@@ -12,6 +13,7 @@ interface BoardProps {
 	selectedCell: Cell | null;
 	pendingPromotionMoves: Move[] | null;
 	promotionColor: Colors | null;
+	timeWinner: Colors | null;
 	isCellAvailable: (cell: Cell) => boolean;
 	click: (cell: Cell) => void;
 	handlePromotionSelect: (piece: FigureNames) => void;
@@ -23,14 +25,19 @@ const BoardComponent: FC<BoardProps> = ({
 	selectedCell,
 	pendingPromotionMoves,
 	promotionColor,
+	timeWinner,
 	isCellAvailable,
 	click,
 	handlePromotionSelect,
 }) => {
 	return (
 		<div>
-			<h3>Текущий игрок {snapshot.currentTurn}</h3>
-			<GameStatusBar status={snapshot.status} currentTurn={snapshot.currentTurn} />
+			<h3>Ход: {getColorLabel(snapshot.currentTurn)}</h3>
+			<GameStatusBar
+				status={snapshot.status}
+				currentTurn={snapshot.currentTurn}
+				timeWinner={timeWinner}
+			/>
 			<div className='board'>
 				{snapshot.board.cells.map((row, rowIndex) => (
 					<React.Fragment key={rowIndex}>

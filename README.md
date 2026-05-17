@@ -1,30 +1,42 @@
-# React + TypeScript + Vite
+# React Chess
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Браузерные шахматы для двух игроков на одном экране. React 18, TypeScript, Vite.
 
-Currently, two official plugins are available:
+## Возможности
 
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Полные правила: рокировка, взятие на проходе, превращение пешки
+- Шах, мат, пат
+- Таймер (5 минут на партию) с победой по времени
+- Подсветка ходов и взятий
 
-## Expanding the ESLint configuration
+## Запуск
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
--   Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-	// other rules...
-	parserOptions: {
-		ecmaVersion: 'latest',
-		sourceType: 'module',
-		project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-		tsconfigRootDir: __dirname,
-	},
-};
+```bash
+npm install
+npm run dev
 ```
 
--   Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
--   Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
--   Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Скрипты
+
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Dev-сервер с HMR |
+| `npm run build` | Production-сборка |
+| `npm run test` | Unit-тесты (Vitest) |
+| `npm run lint` | ESLint |
+
+## Структура
+
+```
+src/
+├── chess/        # Доменная логика (доска, фигуры, правила)
+├── components/   # UI-компоненты
+├── hooks/        # useChessGame — связка UI и логики
+└── styles/       # Стили
+```
+
+## Архитектура
+
+- `ChessGame` — единая точка входа в шахматную логику
+- `MoveHandler` — отдельные обработчики для обычных ходов, рокировки, en passant и превращения
+- `useChessGame` — управление партией, выбором клеток и состоянием UI
