@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import CellComponent from './CellComponent';
 import { PositionSnapshot } from '../chess/ChessGame';
 import { Cell } from '../chess/board/Cell';
 import { getColorLabel } from '../chess/colorLabels';
 import { Colors, FigureNames } from '../chess/types';
 import { Move } from '../chess/Move';
+import { useBoardKeyboard } from '../hooks/useBoardKeyboard';
 import GameStatusBar from './GameStatusBar';
 import PromotionModal from './PromotionModal';
 
@@ -19,7 +20,7 @@ interface BoardProps {
 	handlePromotionSelect: (piece: FigureNames) => void;
 }
 
-/** Доска: только отображение и делегирование кликов. */
+/** Доска: отображение, клики и клавиатурная навигация. */
 const BoardComponent: FC<BoardProps> = ({
 	snapshot,
 	selectedCell,
@@ -30,6 +31,15 @@ const BoardComponent: FC<BoardProps> = ({
 	click,
 	handlePromotionSelect,
 }) => {
+	const activateCell = useCallback(
+		(coords: { x: number; y: number }) => {
+			click(snapshot.board.getCell(coords.x, coords.y));
+		},
+		[click, snapshot.board],
+	);
+
+	const { focus, handleBoardKeyDown } = useBoardKeyboard(activateCell);
+
 	return (
 		<div>
 			<h3>Ход: {getColorLabel(snapshot.currentTurn)}</h3>
@@ -38,7 +48,14 @@ const BoardComponent: FC<BoardProps> = ({
 				currentTurn={snapshot.currentTurn}
 				timeWinner={timeWinner}
 			/>
-			<div className='board'>
+			<div
+				className='board'
+				role='grid'
+				aria-label='Шахматная доска'
+				aria-rowcount={8}
+				aria-colcount={8}
+				onKeyDown={handleBoardKeyDown}
+			>
 				{snapshot.board.cells.map((row, rowIndex) => (
 					<React.Fragment key={rowIndex}>
 						{row.map((cell) => (
@@ -48,6 +65,7 @@ const BoardComponent: FC<BoardProps> = ({
 								key={`${cell.x}-${cell.y}`}
 								selected={cell.x === selectedCell?.x && cell.y === selectedCell?.y}
 								isAvailable={isCellAvailable(cell)}
+								isFocused={cell.x === focus.x && cell.y === focus.y}
 							/>
 						))}
 					</React.Fragment>

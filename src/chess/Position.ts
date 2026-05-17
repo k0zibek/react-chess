@@ -1,6 +1,7 @@
 import { Board } from './board/Board';
 import { CastlingRights } from './CastlingRights';
 import { Cell } from './board/Cell';
+import { clonePosition } from './positionClone';
 import { Colors, GameStatus } from './types';
 import { MoveContext } from './MoveContext';
 
@@ -29,5 +30,10 @@ export class Position implements MoveContext {
 
 	switchTurn(): void {
 		this.currentTurn = this.currentTurn === Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+	}
+
+	/** Глубокая копия позиции для undo и анализа. */
+	clone(): Position {
+		return clonePosition(this);
 	}
 }
