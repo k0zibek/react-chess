@@ -1,26 +1,38 @@
 import React, { FC } from 'react';
 import CellComponent from './CellComponent';
-import { GameState } from '../models/GameState';
-import { useChessBoard } from '../hooks/useChessBoard';
+import { PositionSnapshot } from '../chess/ChessGame';
+import { Cell } from '../chess/board/Cell';
+import { Colors, FigureNames } from '../chess/types';
+import { Move } from '../chess/Move';
 import GameStatusBar from './GameStatusBar';
 import PromotionModal from './PromotionModal';
 
 interface BoardProps {
-	gameState: GameState;
-	setGameState: (state: GameState) => void;
+	snapshot: PositionSnapshot;
+	selectedCell: Cell | null;
+	pendingPromotionMoves: Move[] | null;
+	promotionColor: Colors | null;
+	isCellAvailable: (cell: Cell) => boolean;
+	click: (cell: Cell) => void;
+	handlePromotionSelect: (piece: FigureNames) => void;
 }
 
-/** Доска: выбор фигуры, подсветка легальных ходов и применение ходов. */
-const BoardComponent: FC<BoardProps> = ({ gameState, setGameState }) => {
-	const { selectedCell, pendingPromotionMoves, isCellAvailable, click, handlePromotionSelect } =
-		useChessBoard(gameState, setGameState);
-
+/** Доска: только отображение и делегирование кликов. */
+const BoardComponent: FC<BoardProps> = ({
+	snapshot,
+	selectedCell,
+	pendingPromotionMoves,
+	promotionColor,
+	isCellAvailable,
+	click,
+	handlePromotionSelect,
+}) => {
 	return (
 		<div>
-			<h3>Текущий игрок {gameState.currentTurn}</h3>
-			<GameStatusBar status={gameState.status} currentTurn={gameState.currentTurn} />
+			<h3>Текущий игрок {snapshot.currentTurn}</h3>
+			<GameStatusBar status={snapshot.status} currentTurn={snapshot.currentTurn} />
 			<div className='board'>
-				{gameState.board.cells.map((row, rowIndex) => (
+				{snapshot.board.cells.map((row, rowIndex) => (
 					<React.Fragment key={rowIndex}>
 						{row.map((cell) => (
 							<CellComponent
@@ -34,11 +46,8 @@ const BoardComponent: FC<BoardProps> = ({ gameState, setGameState }) => {
 					</React.Fragment>
 				))}
 			</div>
-			{pendingPromotionMoves && (
-				<PromotionModal
-					color={pendingPromotionMoves[0].from.figure!.color}
-					onSelect={handlePromotionSelect}
-				/>
+			{promotionColor && pendingPromotionMoves && (
+				<PromotionModal color={promotionColor} onSelect={handlePromotionSelect} />
 			)}
 		</div>
 	);

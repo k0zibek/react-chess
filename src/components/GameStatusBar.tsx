@@ -1,6 +1,5 @@
 import { FC } from 'react';
-import { Colors } from '../models/Colors';
-import { GameStatus } from '../models/GameStatus';
+import { Colors, GameStatus } from '../chess/types';
 
 interface GameStatusBarProps {
 	status: GameStatus;

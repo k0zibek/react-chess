@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { Colors } from '../models/Colors';
+import { Colors } from '../chess/types';
 
 interface TimerProps {
 	currentTurn: Colors;

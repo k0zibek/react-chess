@@ -1,15 +1,7 @@
 import { FC } from 'react';
-import { Colors } from '../models/Colors';
-import { FigureNames } from '../models/FigureNames';
-import { PROMOTION_PIECES } from '../models/promotion';
-import blackBishop from '../assets/black-bishop.png';
-import blackKnight from '../assets/black-knight.png';
-import blackQueen from '../assets/black-queen.png';
-import blackRook from '../assets/black-rook.png';
-import whiteBishop from '../assets/white-bishop.png';
-import whiteKnight from '../assets/white-knight.png';
-import whiteQueen from '../assets/white-queen.png';
-import whiteRook from '../assets/white-rook.png';
+import { Colors, FigureNames } from '../chess/types';
+import { getFigureLogo } from '../chess/figures/figureAssets';
+import { PROMOTION_PIECES } from '../chess/constants';
 
 interface PromotionModalProps {
 	color: Colors;
@@ -26,21 +18,6 @@ const LABELS: Record<FigureNames, string> = {
 	[FigureNames.FIGURE]: 'Фигура',
 };
 
-const LOGOS: Record<Colors, Partial<Record<FigureNames, string>>> = {
-	[Colors.WHITE]: {
-		[FigureNames.QUEEN]: whiteQueen,
-		[FigureNames.ROOK]: whiteRook,
-		[FigureNames.BISHOP]: whiteBishop,
-		[FigureNames.KNIGHT]: whiteKnight,
-	},
-	[Colors.BLACK]: {
-		[FigureNames.QUEEN]: blackQueen,
-		[FigureNames.ROOK]: blackRook,
-		[FigureNames.BISHOP]: blackBishop,
-		[FigureNames.KNIGHT]: blackKnight,
-	},
-};
-
 /** Модальное окно выбора фигуры при превращении пешки. */
 const PromotionModal: FC<PromotionModalProps> = ({ color, onSelect }) => {
 	return (
@@ -48,16 +25,19 @@ const PromotionModal: FC<PromotionModalProps> = ({ color, onSelect }) => {
 			<div className='promotion-modal'>
 				<h3>Выберите фигуру</h3>
 				<div className='promotion-options'>
-					{PROMOTION_PIECES.map((piece) => (
-						<button
-							key={piece}
-							className='promotion-btn'
-							onClick={() => onSelect(piece)}
-							aria-label={LABELS[piece]}
-						>
-							<img src={LOGOS[color][piece]} alt={LABELS[piece]} />
-						</button>
-					))}
+					{PROMOTION_PIECES.map((piece) => {
+						const logo = getFigureLogo(piece, color);
+						return (
+							<button
+								key={piece}
+								className='promotion-btn'
+								onClick={() => onSelect(piece)}
+								aria-label={LABELS[piece]}
+							>
+								{logo && <img src={logo} alt={LABELS[piece]} />}
+							</button>
+						);
+					})}
 				</div>
 			</div>
 		</div>
