@@ -4,17 +4,21 @@ import { Cell } from '../models/Cell';
 interface CellProps {
 	cell: Cell;
 	selected: boolean;
+	isAvailable: boolean;
 	click: (cell: Cell) => void;
 }
 
-const CellComponent: FC<CellProps> = ({ cell, selected, click }) => {
+/** Клетка доски с подсветкой выбора и доступных ходов. */
+const CellComponent: FC<CellProps> = ({ cell, selected, isAvailable, click }) => {
+	const isCapture = isAvailable && !!cell.figure;
+
 	return (
 		<div
 			className={['cell', cell.color, selected ? 'selected' : ''].join(' ')}
 			onClick={() => click(cell)}
-			style={{ background: cell.available && cell.figure ? '#bf9300' : '' }}
+			style={{ background: isCapture ? '#bf9300' : '' }}
 		>
-			{cell.available && !cell.figure && <div className='available'></div>}
+			{isAvailable && !cell.figure && <div className='available'></div>}
 			{cell.figure?.logo && <img src={cell.figure.logo} alt='' />}
 		</div>
 	);

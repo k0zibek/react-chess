@@ -1,41 +1,38 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import BoardComponent from './components/BoardComponent';
 import './styles/App.css';
-import { Board } from './models/Board';
-import { Colors } from './models/Colors';
-import { Player } from './models/Player';
+import { GameState } from './models/GameState';
+import { GameStatus } from './models/GameStatus';
 import LostFigures from './components/LostFigures';
 import Timer from './components/Timer';
 
 function App() {
-	const [board, setBoard] = useState(new Board());
-	const [whitePlayer] = useState(new Player(Colors.WHITE));
-	const [blackPlayer] = useState(new Player(Colors.BLACK));
-	const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+	const [gameState, setGameState] = useState(() => GameState.createInitial());
+	const [restartKey, setRestartKey] = useState(0);
 
 	const restart = useCallback(() => {
-		const newBoard = new Board();
-		newBoard.initCells();
-		newBoard.addFigures();
-		setBoard(newBoard);
-		setCurrentPlayer(whitePlayer);
-	}, [whitePlayer]);
+		setGameState(GameState.createInitial());
+		setRestartKey((key) => key + 1);
+	}, []);
 
-	useEffect(() => {
-		restart();
-	}, [restart]);
-
-	function swapPlayer() {
-		setCurrentPlayer(currentPlayer?.color === Colors.WHITE ? blackPlayer : whitePlayer);
-	}
+	const isGameOver =
+		gameState.status === GameStatus.CHECKMATE || gameState.status === GameStatus.STALEMATE;
 
 	return (
 		<div className='app container'>
-			<Timer currentPlayer={currentPlayer} restart={restart} />
-			<BoardComponent board={board} setBoard={setBoard} currentPlayer={currentPlayer} swapPlayer={swapPlayer} />
+			<Timer
+				currentTurn={gameState.currentTurn}
+				isGameOver={isGameOver}
+				restart={restart}
+			/>
+			<BoardComponent
+				key={restartKey}
+				gameState={gameState}
+				setGameState={setGameState}
+			/>
 			<div>
-				<LostFigures title={'Черные фигуры'} figures={board.lostBlackFigures} />
-				<LostFigures title={'Белые фигуры'} figures={board.lostWhiteFigures} />
+				<LostFigures title={'Черные фигуры'} figures={gameState.board.lostBlackFigures} />
+				<LostFigures title={'Белые фигуры'} figures={gameState.board.lostWhiteFigures} />
 			</div>
 		</div>
 	);
