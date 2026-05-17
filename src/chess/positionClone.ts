@@ -2,24 +2,15 @@ import { Board } from './board/Board';
 import { forEachCell } from './board/boardUtils';
 import { createFigure } from './figures/createFigure';
 import { Figure } from './figures/Figure';
-import { Pawn } from './figures/Pawn';
 import { Position } from './Position';
 import { FigureNames } from './types';
-
-/** Копирует состояние движения фигуры. */
-function copyFigureState(target: Figure, source: Figure): void {
-	target.hasMoved = source.hasMoved;
-	if (target instanceof Pawn && source instanceof Pawn) {
-		target.isFirstStep = source.isFirstStep;
-	}
-}
 
 /** Клонирует фигуру для списка съеденных (без привязки к игровой доске). */
 function cloneLostFigure(source: Figure, spareBoard: Board): Figure {
 	const spareCell = spareBoard.getCell(0, 0);
 	const copy = createFigure(source.name, source.color, spareCell);
 	spareCell.figure = null;
-	copyFigureState(copy, source);
+	copy.copyMoveStateFrom(source);
 	return copy;
 }
 
@@ -29,6 +20,7 @@ export function clonePosition(source: Position): Position {
 	clone.board.initCells();
 	clone.currentTurn = source.currentTurn;
 	clone.status = source.status;
+	clone.endState = source.endState;
 	clone.castling = source.castling.clone();
 
 	forEachCell(source.board, (cell) => {
@@ -37,7 +29,7 @@ export function clonePosition(source: Position): Position {
 
 		const targetCell = clone.board.getCell(cell.x, cell.y);
 		const copy = createFigure(figure.name, figure.color, targetCell);
-		copyFigureState(copy, figure);
+		copy.copyMoveStateFrom(figure);
 	});
 
 	if (source.enPassantTarget) {

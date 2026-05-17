@@ -1,18 +1,20 @@
 import { Cell } from './board/Cell';
 import { Board } from './board/Board';
-import { MAX_UNDO_HISTORY } from './constants';
+import { getOpponent, MAX_UNDO_HISTORY } from './constants';
+import { isGameFinished } from './gameEndState';
 import { Move } from './Move';
 import { applyMove } from './moves/applyMove';
 import { Position } from './Position';
 import { updateGameStatus } from './rules/gameStatus';
 import { getLegalMoves, isLegalMove } from './rules/legalMoves';
-import { Colors, GameStatus } from './types';
+import { Colors, GameEndState, GameStatus } from './types';
 
 /** Снимок позиции для отображения в UI. */
 export interface PositionSnapshot {
 	board: Board;
 	currentTurn: Colors;
 	status: GameStatus;
+	endState: GameEndState;
 }
 
 /** Единая точка входа в шахматную логику. */
@@ -33,16 +35,24 @@ export class ChessGame {
 			board: this.position.board,
 			currentTurn: this.position.currentTurn,
 			status: this.position.status,
+			endState: this.position.endState,
 		};
+	}
+
+	/** Партия завершена (мат, пат или время). */
+	isGameOver(): boolean {
+		return isGameFinished(this.position.endState);
 	}
 
 	/** Легальные ходы с выбранной клетки. */
 	selectLegalMoves(cell: Cell): Move[] {
+		if (this.isGameOver()) return [];
 		return getLegalMoves(this.position, cell);
 	}
 
 	/** Применяет легальный ход и обновляет статус партии. */
 	playMove(move: Move): boolean {
+		if (this.isGameOver()) return false;
 		if (!isLegalMove(this.position, move)) return false;
 
 		this.history.push(this.position.clone());
@@ -55,13 +65,21 @@ export class ChessGame {
 		return true;
 	}
 
+	/** Фиксирует победу по истечении времени. */
+	declareTimeout(loser: Colors): void {
+		if (this.isGameOver()) return;
+		this.position.endState = { kind: 'timeout', winner: getOpponent(loser) };
+	}
+
 	/** Можно ли отменить последний ход. */
 	canUndo(): boolean {
-		return this.history.length > 0;
+		return this.history.length > 0 && !this.isGameOver();
 	}
 
 	/** Откатывает последний ход. */
 	undo(): boolean {
+		if (!this.canUndo()) return false;
+
 		const previous = this.history.pop();
 		if (!previous) return false;
 

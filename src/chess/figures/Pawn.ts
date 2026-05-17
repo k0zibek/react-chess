@@ -23,9 +23,19 @@ export class Pawn extends Figure {
 		return moves;
 	}
 
-	/** Сбрасывает флаг первого хода после перемещения. */
-	markMoved(): void {
+	onMoved(): void {
 		this.isFirstStep = false;
+	}
+
+	getPawnFirstStepForRecord(): boolean | null {
+		return this.isFirstStep;
+	}
+
+	restoreMoveState(hasMoved: boolean, pawnFirstStep?: boolean | null): void {
+		super.restoreMoveState(hasMoved, pawnFirstStep);
+		if (pawnFirstStep != null) {
+			this.isFirstStep = pawnFirstStep;
+		}
 	}
 
 	canAttackSquare(target: Cell): boolean {

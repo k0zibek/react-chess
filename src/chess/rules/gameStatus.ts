@@ -2,9 +2,11 @@ import type { Position } from '../Position';
 import { GameStatus } from '../types';
 import { isKingInCheck } from './attack';
 import { getAllLegalMoves } from './legalMoves';
+import { syncEndStateFromStatus } from '../gameEndState';
 
 /** Обновляет статус партии: шах, мат или пат. */
 export function updateGameStatus(position: Position): void {
+	if (position.endState.kind === 'timeout') return;
 	if (position.status === GameStatus.CHECKMATE || position.status === GameStatus.STALEMATE) {
 		return;
 	}
@@ -19,4 +21,6 @@ export function updateGameStatus(position: Position): void {
 	} else {
 		position.status = GameStatus.ONGOING;
 	}
+
+	syncEndStateFromStatus(position);
 }

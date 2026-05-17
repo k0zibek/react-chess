@@ -88,7 +88,7 @@ describe('ChessGame undo', () => {
 	it('восстанавливает съеденную фигуру при undo', () => {
 		const position = createEmptyPosition();
 		placePiece(position, FigureNames.KING, Colors.WHITE, 4, 7);
-		placePiece(position, FigureNames.KING, Colors.BLACK, 0, 0);
+		placePiece(position, FigureNames.KING, Colors.BLACK, 4, 0);
 		placePiece(position, FigureNames.ROOK, Colors.WHITE, 0, 7);
 		placePiece(position, FigureNames.ROOK, Colors.BLACK, 0, 0);
 		setTurn(position, Colors.WHITE);
@@ -98,8 +98,10 @@ describe('ChessGame undo', () => {
 			.selectLegalMoves(position.board.getCell(0, 7))
 			.find((move) => move.to.x === 0 && move.to.y === 0);
 
+		expect(capture).toBeDefined();
 		game.playMove(capture!);
 		expect(game.getSnapshot().board.lostBlackFigures).toHaveLength(1);
+		expect(game.canUndo()).toBe(true);
 
 		game.undo();
 		const board = game.getSnapshot().board;

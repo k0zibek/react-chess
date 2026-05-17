@@ -26,6 +26,25 @@ export abstract class Figure {
 	/** Бьёт ли фигура указанную клетку (для проверки атаки). */
 	abstract canAttackSquare(target: Cell): boolean;
 
+	/** Вызывается после успешного перемещения фигуры. */
+	onMoved(): void {}
+
+	/** Значение isFirstStep для пешки в MoveRecord; у остальных фигур null. */
+	getPawnFirstStepForRecord(): boolean | null {
+		return null;
+	}
+
+	/** Восстанавливает флаги движения при откате хода. */
+	restoreMoveState(hasMoved: boolean, pawnFirstStep?: boolean | null): void {
+		void pawnFirstStep;
+		this.hasMoved = hasMoved;
+	}
+
+	/** Копирует флаги движения с другой фигуры (для клонирования позиции). */
+	copyMoveStateFrom(source: Figure): void {
+		this.restoreMoveState(source.hasMoved, source.getPawnFirstStepForRecord());
+	}
+
 	/** Можно ли взять фигуру на занятой клетке (не своих и не короля). */
 	protected canTargetCell(target: Cell): boolean {
 		if (target.isEmpty()) return false;

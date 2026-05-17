@@ -24,6 +24,14 @@ export enum GameStatus {
 
 export type MoveType = 'normal' | 'castle' | 'enPassant' | 'promotion';
 
+/** Единое состояние конца партии для UI и домена. */
+export type GameEndState =
+	| { kind: 'ongoing' }
+	| { kind: 'check' }
+	| { kind: 'checkmate'; winner: Colors }
+	| { kind: 'stalemate' }
+	| { kind: 'timeout'; winner: Colors };
+
 import type { CastlingRights } from './CastlingRights';
 import type { Cell } from './board/Cell';
 import type { Figure } from './figures/Figure';

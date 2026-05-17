@@ -2,7 +2,6 @@ import { Position } from '../Position';
 import { Move } from '../Move';
 import { CastlingRights } from '../CastlingRights';
 import { createFigure } from '../figures/createFigure';
-import { Pawn } from '../figures/Pawn';
 import { Colors, FigureNames, GameStatus, MoveType } from '../types';
 
 /** Пустая доска без фигур. */
@@ -46,8 +45,8 @@ export function setStatus(position: Position, status: GameStatus): void {
 /** Помечает пешку как уже ходившую (без права двойного хода). */
 export function markPawnMoved(position: Position, x: number, y: number): void {
 	const figure = position.board.getCell(x, y).figure;
-	if (figure instanceof Pawn) {
-		figure.isFirstStep = false;
+	if (figure?.name === FigureNames.PAWN) {
+		figure.onMoved();
 	}
 }
 

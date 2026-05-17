@@ -4,12 +4,15 @@ import { Move } from '../Move';
 import { MoveContext } from '../MoveContext';
 import { Colors, FigureNames } from '../types';
 import { Figure } from './Figure';
-import { Rook } from './Rook';
 
 /** Король: ход на одну клетку и рокировка. */
 export class King extends Figure {
 	constructor(color: Colors, cell: Cell) {
 		super(color, cell, FigureNames.KING);
+	}
+
+	onMoved(): void {
+		this.hasMoved = true;
 	}
 
 	getPseudoLegalMoves(ctx: MoveContext): Move[] {
@@ -54,7 +57,7 @@ export class King extends Figure {
 			const rook = rookCell.figure;
 
 			const pathClear = config.emptyX.every((x: number) => board.getCell(x, y).isEmpty());
-			if (!pathClear || !(rook instanceof Rook) || rook.hasMoved) continue;
+			if (!pathClear || rook?.name !== FigureNames.ROOK || rook.hasMoved) continue;
 
 			moves.push(new Move(this.cell, board.getCell(config.kingToX, y), 'castle'));
 		}

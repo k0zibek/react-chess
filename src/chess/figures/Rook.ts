@@ -18,6 +18,10 @@ export class Rook extends Figure {
 		super(color, cell, FigureNames.ROOK);
 	}
 
+	onMoved(): void {
+		this.hasMoved = true;
+	}
+
 	getPseudoLegalMoves(ctx: MoveContext): Move[] {
 		return SlidingMover.getMoves(this.cell, ctx.board, ROOK_DIRECTIONS, (target) =>
 			this.canTargetCell(target),

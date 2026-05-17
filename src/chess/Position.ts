@@ -2,7 +2,7 @@ import { Board } from './board/Board';
 import { CastlingRights } from './CastlingRights';
 import { Cell } from './board/Cell';
 import { clonePosition } from './positionClone';
-import { Colors, GameStatus } from './types';
+import { Colors, GameEndState, GameStatus } from './types';
 import { MoveContext } from './MoveContext';
 
 /** Мутабельное состояние позиции: доска, очередь хода и спецправила. */
@@ -12,6 +12,7 @@ export class Position implements MoveContext {
 	castling: CastlingRights;
 	enPassantTarget: Cell | null;
 	status: GameStatus;
+	endState: GameEndState;
 
 	constructor() {
 		this.board = new Board();
@@ -19,6 +20,7 @@ export class Position implements MoveContext {
 		this.castling = new CastlingRights();
 		this.enPassantTarget = null;
 		this.status = GameStatus.ONGOING;
+		this.endState = { kind: 'ongoing' };
 	}
 
 	static createInitial(): Position {

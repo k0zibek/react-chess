@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { ChessGame } from '../chess/ChessGame';
 import { Cell } from '../chess/board/Cell';
-import { Colors, FigureNames, GameStatus } from '../chess/types';
+import { Colors, FigureNames } from '../chess/types';
 import { Move } from '../chess/Move';
 import { useGameTimer } from './useGameTimer';
 
@@ -35,17 +35,17 @@ export function useChessGame() {
 	const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 	const [legalMoves, setLegalMoves] = useState<Move[]>([]);
 	const [pendingPromotionMoves, setPendingPromotionMoves] = useState<Move[] | null>(null);
-	const [timeWinner, setTimeWinner] = useState<Colors | null>(null);
 
 	const snapshot = game.getSnapshot();
-	const isGameOver =
-		snapshot.status === GameStatus.CHECKMATE ||
-		snapshot.status === GameStatus.STALEMATE ||
-		timeWinner !== null;
+	const isGameOver = game.isGameOver();
 
-	const handleTimeExpired = useCallback((loser: Colors) => {
-		setTimeWinner(loser === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
-	}, []);
+	const handleTimeExpired = useCallback(
+		(loser: Colors) => {
+			game.declareTimeout(loser);
+			dispatch({ type: 'TICK' });
+		},
+		[game],
+	);
 
 	const timer = useGameTimer(snapshot.currentTurn, isGameOver, handleTimeExpired);
 
@@ -123,11 +123,10 @@ export function useChessGame() {
 		setSelectedCell(null);
 		setLegalMoves([]);
 		setPendingPromotionMoves(null);
-		setTimeWinner(null);
 	}, [timer]);
 
 	const undo = useCallback(() => {
-		if (!game.canUndo() || isGameOver) return;
+		if (!game.canUndo()) return;
 
 		game.undo();
 		timer.restoreSnapshot();
@@ -135,7 +134,7 @@ export function useChessGame() {
 		setSelectedCell(null);
 		setLegalMoves([]);
 		setPendingPromotionMoves(null);
-	}, [game, isGameOver, timer]);
+	}, [game, timer]);
 
 	const promotionColor = pendingPromotionMoves?.[0]?.from.figure?.color ?? null;
 
@@ -147,7 +146,6 @@ export function useChessGame() {
 		pendingPromotionMoves,
 		promotionColor,
 		isGameOver,
-		timeWinner,
 		canUndo: game.canUndo(),
 		whiteTime: timer.whiteTime,
 		blackTime: timer.blackTime,

@@ -1,6 +1,4 @@
-import { FigureNames } from '../../types';
 import { requireFigure } from '../../cellUtils';
-import { Pawn } from '../../figures/Pawn';
 import { restoreMover } from '../moveUtils';
 import { MoveHandler } from './MoveHandler';
 
@@ -14,12 +12,7 @@ export const normalHandler: MoveHandler = {
 		}
 		move.to.setFigure(piece);
 		move.from.figure = null;
-		if (piece instanceof Pawn) {
-			piece.markMoved();
-		}
-		if (piece.name === FigureNames.KING || piece.name === FigureNames.ROOK) {
-			piece.hasMoved = true;
-		}
+		piece.onMoved();
 	},
 
 	undo(position, move, record) {

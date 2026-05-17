@@ -11,7 +11,6 @@ function App() {
 		pendingPromotionMoves,
 		promotionColor,
 		isGameOver,
-		timeWinner,
 		canUndo,
 		whiteTime,
 		blackTime,
@@ -37,7 +36,6 @@ function App() {
 				selectedCell={selectedCell}
 				pendingPromotionMoves={pendingPromotionMoves}
 				promotionColor={promotionColor}
-				timeWinner={timeWinner}
 				isCellAvailable={isCellAvailable}
 				click={click}
 				handlePromotionSelect={handlePromotionSelect}

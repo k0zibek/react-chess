@@ -1,19 +1,20 @@
+import { FigureNames } from '../../types';
+import { requireFigure } from '../../cellUtils';
 import { createFigure } from '../../figures/createFigure';
-import { Pawn } from '../../figures/Pawn';
 import { restoreMover } from '../moveUtils';
 import { MoveHandler } from './MoveHandler';
 
 /** Превращение пешки в выбранную фигуру. */
 export const promotionHandler: MoveHandler = {
 	apply(position, move, record) {
-		const pawn = move.from.figure;
-		if (!(pawn instanceof Pawn) || !move.promotionPiece) return;
+		const pawn = requireFigure(move.from);
+		if (pawn.name !== FigureNames.PAWN || !move.promotionPiece) return;
 
 		if (move.to.figure) {
 			position.board.captureFigure(move.to.figure);
 		}
 		move.from.figure = null;
-		pawn.markMoved();
+		pawn.onMoved();
 		record.promotedPiece = createFigure(move.promotionPiece, pawn.color, move.to);
 	},
 

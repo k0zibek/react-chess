@@ -1,17 +1,13 @@
 import { FigureNames, MoveRecord } from '../types';
 import { requireFigure } from '../cellUtils';
 import { Move } from '../Move';
-import { Pawn } from '../figures/Pawn';
 import { Position } from '../Position';
 
 /** Восстанавливает фигуру на исходной клетке при откате. */
 export function restoreMover(move: Move, record: MoveRecord): void {
 	move.from.setFigure(record.mover);
 	move.to.figure = null;
-	record.mover.hasMoved = record.moverHasMovedBefore;
-	if (record.mover instanceof Pawn && record.pawnIsFirstStepBefore !== null) {
-		record.mover.isFirstStep = record.pawnIsFirstStepBefore;
-	}
+	record.mover.restoreMoveState(record.moverHasMovedBefore, record.pawnIsFirstStepBefore);
 }
 
 /** Создаёт снимок состояния до применения хода. */
@@ -32,7 +28,7 @@ export function createMoveRecord(position: Position, move: Move): MoveRecord {
 		rookFrom: null,
 		rookTo: null,
 		rookHasMovedBefore: false,
-		pawnIsFirstStepBefore: mover instanceof Pawn ? mover.isFirstStep : null,
+		pawnIsFirstStepBefore: mover.getPawnFirstStepForRecord(),
 	};
 }
 
