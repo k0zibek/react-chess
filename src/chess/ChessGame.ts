@@ -1,5 +1,6 @@
 import { Cell } from './board/Cell';
 import { Board } from './board/Board';
+import { MAX_UNDO_HISTORY } from './constants';
 import { Move } from './Move';
 import { applyMove } from './moves/applyMove';
 import { Position } from './Position';
@@ -45,6 +46,9 @@ export class ChessGame {
 		if (!isLegalMove(this.position, move)) return false;
 
 		this.history.push(this.position.clone());
+		if (this.history.length > MAX_UNDO_HISTORY) {
+			this.history.shift();
+		}
 		applyMove(this.position, move);
 		this.position.switchTurn();
 		updateGameStatus(this.position);
