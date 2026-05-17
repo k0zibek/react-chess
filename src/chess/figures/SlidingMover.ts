@@ -51,6 +51,8 @@ export class SlidingMover {
 		const offsetX = target.x - from.x;
 		const offsetY = target.y - from.y;
 		if (offsetX === 0 && offsetY === 0) return false;
+		if (dx === 0 && offsetX !== 0) return false;
+		if (dy === 0 && offsetY !== 0) return false;
 
 		const stepsX = dx === 0 ? 0 : offsetX / dx;
 		const stepsY = dy === 0 ? 0 : offsetY / dy;
@@ -69,7 +71,7 @@ export class SlidingMover {
 		let y = from.y + dy;
 
 		while (x !== target.x || y !== target.y) {
-			if (!from.board.getCell(x, y).isEmpty()) return false;
+			if (!isOnBoard(x, y) || !from.board.getCell(x, y).isEmpty()) return false;
 			x += dx;
 			y += dy;
 		}

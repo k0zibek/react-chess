@@ -47,7 +47,10 @@ export class Pawn extends Figure {
 
 		if (!this.isFirstStep) return;
 
-		const doubleCell = board.getCell(this.cell.x, this.cell.y + direction * 2);
+		const doubleY = this.cell.y + direction * 2;
+		if (doubleY < 0 || doubleY > 7) return;
+
+		const doubleCell = board.getCell(this.cell.x, doubleY);
 		if (doubleCell.isEmpty()) {
 			moves.push(new Move(this.cell, doubleCell, 'normal'));
 		}
