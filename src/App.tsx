@@ -13,10 +13,11 @@ function App() {
 		isGameOver,
 		timeWinner,
 		canUndo,
+		whiteTime,
+		blackTime,
 		isCellAvailable,
 		click,
 		handlePromotionSelect,
-		handleTimeExpired,
 		undo,
 		restart,
 	} = useChessGame();
@@ -24,10 +25,10 @@ function App() {
 	return (
 		<div className='app container'>
 			<Timer
-				currentTurn={snapshot.currentTurn}
+				whiteTime={whiteTime}
+				blackTime={blackTime}
 				isGameOver={isGameOver}
 				canUndo={canUndo}
-				onTimeExpired={handleTimeExpired}
 				undo={undo}
 				restart={restart}
 			/>

@@ -2,6 +2,8 @@ import { Colors, FigureNames } from './types';
 
 export const BOARD_SIZE = 8;
 export const KING_FILE = 4;
+/** Максимальная глубина истории для undo. */
+export const MAX_UNDO_HISTORY = 50;
 
 /** Направление пешки: белые вверх (-1), чёрные вниз (+1). */
 export function getPawnDirection(color: Colors): number {

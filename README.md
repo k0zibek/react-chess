@@ -25,6 +25,7 @@ npm run dev
 | `npm run dev` | Dev-сервер с HMR |
 | `npm run build` | Production-сборка |
 | `npm run test` | Unit-тесты (Vitest) |
+| `npm run test:coverage` | Покрытие домена `src/chess/` |
 | `npm run lint` | ESLint |
 
 ## Структура

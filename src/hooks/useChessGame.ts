@@ -3,6 +3,7 @@ import { ChessGame } from '../chess/ChessGame';
 import { Cell } from '../chess/board/Cell';
 import { Colors, FigureNames, GameStatus } from '../chess/types';
 import { Move } from '../chess/Move';
+import { useGameTimer } from './useGameTimer';
 
 type ChessUiState = {
 	game: ChessGame;
@@ -24,7 +25,7 @@ function chessUiReducer(state: ChessUiState, action: ChessUiAction): ChessUiStat
 	}
 }
 
-/** Управляет партией, выбором клеток и применением ходов. */
+/** Управляет партией, выбором клеток, таймером и применением ходов. */
 export function useChessGame() {
 	const [{ game, version }, dispatch] = useReducer(chessUiReducer, undefined, () => ({
 		game: ChessGame.createInitial(),
@@ -42,6 +43,12 @@ export function useChessGame() {
 		snapshot.status === GameStatus.STALEMATE ||
 		timeWinner !== null;
 
+	const handleTimeExpired = useCallback((loser: Colors) => {
+		setTimeWinner(loser === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
+	}, []);
+
+	const timer = useGameTimer(snapshot.currentTurn, isGameOver, handleTimeExpired);
+
 	const availableKeys = useMemo(
 		() => new Set(legalMoves.map((move) => `${move.to.x}-${move.to.y}`)),
 		[legalMoves],
@@ -57,14 +64,18 @@ export function useChessGame() {
 
 	const playMove = useCallback(
 		(move: Move) => {
-			if (!game.playMove(move)) return;
+			timer.pushSnapshot();
+			if (!game.playMove(move)) {
+				timer.discardLastSnapshot();
+				return;
+			}
 
 			dispatch({ type: 'TICK' });
 			setSelectedCell(null);
 			setLegalMoves([]);
 			setPendingPromotionMoves(null);
 		},
-		[game],
+		[game, timer],
 	);
 
 	const click = useCallback(
@@ -108,27 +119,25 @@ export function useChessGame() {
 		[availableKeys],
 	);
 
-	const handleTimeExpired = useCallback((loser: Colors) => {
-		setTimeWinner(loser === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
-	}, []);
-
 	const restart = useCallback(() => {
 		dispatch({ type: 'RESTART' });
+		timer.reset();
 		setSelectedCell(null);
 		setLegalMoves([]);
 		setPendingPromotionMoves(null);
 		setTimeWinner(null);
-	}, []);
+	}, [timer]);
 
 	const undo = useCallback(() => {
 		if (!game.canUndo() || isGameOver) return;
 
 		game.undo();
+		timer.restoreSnapshot();
 		dispatch({ type: 'TICK' });
 		setSelectedCell(null);
 		setLegalMoves([]);
 		setPendingPromotionMoves(null);
-	}, [game, isGameOver]);
+	}, [game, isGameOver, timer]);
 
 	const promotionColor = pendingPromotionMoves?.[0]?.from.figure?.color ?? null;
 
@@ -142,10 +151,11 @@ export function useChessGame() {
 		isGameOver,
 		timeWinner,
 		canUndo: game.canUndo(),
+		whiteTime: timer.whiteTime,
+		blackTime: timer.blackTime,
 		isCellAvailable,
 		click,
 		handlePromotionSelect,
-		handleTimeExpired,
 		undo,
 		restart,
 	};

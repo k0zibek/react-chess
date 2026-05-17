@@ -3,6 +3,7 @@ import { ChessGame } from '../ChessGame';
 import { Position } from '../Position';
 import { boardsMatch, clonePosition } from '../positionClone';
 import { Colors, FigureNames, GameStatus } from '../types';
+import { MAX_UNDO_HISTORY } from '../constants';
 import { createEmptyPosition, placePiece, setTurn } from './testUtils';
 
 describe('positionClone', () => {
@@ -70,5 +71,70 @@ describe('ChessGame undo', () => {
 		game.restart();
 		expect(game.canUndo()).toBe(false);
 		expect(game.getSnapshot().status).toBe(GameStatus.ONGOING);
+	});
+
+	it('отменяет несколько ходов подряд', () => {
+		const game = ChessGame.createInitial();
+
+		game.playMove(game.selectLegalMoves(game.getSnapshot().board.getCell(4, 6))[0]);
+		game.playMove(game.selectLegalMoves(game.getSnapshot().board.getCell(1, 0))[0]);
+
+		expect(game.undo()).toBe(true);
+		expect(game.getSnapshot().board.getCell(1, 0).figure?.name).toBe(FigureNames.KNIGHT);
+		expect(game.undo()).toBe(true);
+		expect(game.getSnapshot().board.getCell(4, 6).figure?.name).toBe(FigureNames.PAWN);
+	});
+
+	it('восстанавливает съеденную фигуру при undo', () => {
+		const position = createEmptyPosition();
+		placePiece(position, FigureNames.KING, Colors.WHITE, 4, 7);
+		placePiece(position, FigureNames.KING, Colors.BLACK, 0, 0);
+		placePiece(position, FigureNames.ROOK, Colors.WHITE, 0, 7);
+		placePiece(position, FigureNames.ROOK, Colors.BLACK, 0, 0);
+		setTurn(position, Colors.WHITE);
+
+		const game = new ChessGame(position);
+		const capture = game
+			.selectLegalMoves(position.board.getCell(0, 7))
+			.find((move) => move.to.x === 0 && move.to.y === 0);
+
+		game.playMove(capture!);
+		expect(game.getSnapshot().board.lostBlackFigures).toHaveLength(1);
+
+		game.undo();
+		const board = game.getSnapshot().board;
+		expect(board.getCell(0, 0).figure?.name).toBe(FigureNames.ROOK);
+		expect(board.lostBlackFigures).toHaveLength(0);
+	});
+
+	it('ограничивает глубину истории undo', () => {
+		const game = ChessGame.createInitial();
+		let playedMoves = 0;
+
+		for (let i = 0; i < MAX_UNDO_HISTORY + 10; i++) {
+			const snapshot = game.getSnapshot();
+			const board = snapshot.board;
+			let played = false;
+
+			for (let y = 0; y < 8 && !played; y++) {
+				for (let x = 0; x < 8 && !played; x++) {
+					const cell = board.getCell(x, y);
+					if (cell.figure?.color !== snapshot.currentTurn) continue;
+					const legal = game.selectLegalMoves(cell);
+					if (legal.length > 0) {
+						played = game.playMove(legal[0]);
+						if (played) playedMoves++;
+					}
+				}
+			}
+
+			if (!played) break;
+		}
+
+		let undoCount = 0;
+		while (game.undo()) undoCount++;
+
+		expect(playedMoves).toBeGreaterThan(MAX_UNDO_HISTORY);
+		expect(undoCount).toBe(MAX_UNDO_HISTORY);
 	});
 });
