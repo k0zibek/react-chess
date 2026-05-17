@@ -8,8 +8,6 @@ export class Cell {
 	readonly color: Colors;
 	figure: Figure | null;
 	board: Board;
-	available: boolean; // Может ли переместиться
-	id: number; // для React ключей
 
 	constructor(board: Board, x: number, y: number, color: Colors, figure: Figure | null) {
 		this.x = x;
@@ -17,8 +15,6 @@ export class Cell {
 		this.board = board;
 		this.color = color;
 		this.figure = figure;
-		this.available = false;
-		this.id = Math.random();
 	}
 
 	isEmpty(): boolean {
@@ -85,16 +81,5 @@ export class Cell {
 		figure.color === Colors.BLACK
 			? this.board.lostBlackFigures.push(figure)
 			: this.board.lostWhiteFigures.push(figure);
-	}
-
-	moveFigure(target: Cell) {
-		if (this.figure && this.figure?.canMove(target)) {
-			this.figure.moveFigure(target);
-			if (target.figure) {
-				this.addLostFigure(target.figure);
-			}
-			target.setFigure(this.figure);
-			this.figure = null;
-		}
 	}
 }

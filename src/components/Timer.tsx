@@ -1,13 +1,14 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { Player } from '../models/Player';
 import { Colors } from '../models/Colors';
 
 interface TimerProps {
-	currentPlayer: Player | null;
+	currentTurn: Colors;
+	isGameOver: boolean;
 	restart: () => void;
 }
 
-const Timer: FC<TimerProps> = ({ currentPlayer, restart }) => {
+/** Таймер партии с остановкой при завершении игры. */
+const Timer: FC<TimerProps> = ({ currentTurn, isGameOver, restart }) => {
 	const [blackTime, setBlackTime] = useState(300);
 	const [whiteTime, setWhiteTime] = useState(300);
 	const timer = useRef<null | ReturnType<typeof setInterval>>(null);
@@ -25,11 +26,11 @@ const Timer: FC<TimerProps> = ({ currentPlayer, restart }) => {
 			clearInterval(timer.current);
 			timer.current = null;
 		}
-		if (currentPlayer === null) {
+		if (isGameOver) {
 			return;
 		}
 		const callback =
-			currentPlayer.color === Colors.WHITE ? decrementWhiteTimer : decrementBlackTimer;
+			currentTurn === Colors.WHITE ? decrementWhiteTimer : decrementBlackTimer;
 		timer.current = setInterval(callback, 1000);
 		return () => {
 			if (timer.current) {
@@ -37,7 +38,7 @@ const Timer: FC<TimerProps> = ({ currentPlayer, restart }) => {
 				timer.current = null;
 			}
 		};
-	}, [currentPlayer, decrementBlackTimer, decrementWhiteTimer]);
+	}, [currentTurn, isGameOver, decrementBlackTimer, decrementWhiteTimer]);
 
 	const handleRestart = () => {
 		setWhiteTime(300);

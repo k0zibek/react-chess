@@ -1,9 +1,15 @@
-import { Figure, FigureNames } from './Figure';
 import { Cell } from '../Cell';
 import { Colors } from '../Colors';
+import { KING_FILE, isOnBoard } from '../constants';
+import { CASTLING_SIDES, CastlingSide } from '../castlingConfig';
+import { GameState } from '../GameState';
+import { Move } from '../Move';
+import { Figure, FigureNames } from './Figure';
+import { Rook } from './Rook';
 import blackLogo from '../../assets/black-king.png';
 import whiteLogo from '../../assets/white-king.png';
 
+/** Король: ход на одну клетку и рокировка. */
 export class King extends Figure {
 	constructor(color: Colors, cell: Cell) {
 		super(color, cell);
@@ -11,19 +17,53 @@ export class King extends Figure {
 		this.name = FigureNames.KING;
 	}
 
-	isKingUnderAttack(target: Cell): boolean {
-		if (!this.cell.isEmptyVertical(target)) return true;
-		if (!this.cell.isEmptyHorizontal(target)) return true;
-		if (!this.cell.isEmptyDiagonal(target)) return true;
-		return false;
+	getPseudoLegalMoves(state: GameState): Move[] {
+		const moves: Move[] = [];
+
+		for (let dx = -1; dx <= 1; dx++) {
+			for (let dy = -1; dy <= 1; dy++) {
+				if (dx === 0 && dy === 0) continue;
+				const x = this.cell.x + dx;
+				const y = this.cell.y + dy;
+				if (!isOnBoard(x, y)) continue;
+
+				const target = state.board.getCell(x, y);
+				if (target.isEmpty() || this.canTargetCell(target)) {
+					moves.push(new Move(this.cell, target, 'normal'));
+				}
+			}
+		}
+
+		moves.push(...this.getCastlingMoves(state));
+		return moves;
 	}
 
-	canMove(target: Cell): boolean {
-		if (!super.canMove(target)) return false;
+	canAttackSquare(target: Cell): boolean {
 		const dx = Math.abs(target.x - this.cell.x);
 		const dy = Math.abs(target.y - this.cell.y);
-		// if ((dx === 1 && dy === 2) || (dx === 2 && dy === 1)) return false;
-
 		return dx <= 1 && dy <= 1;
+	}
+
+	private getCastlingMoves(state: GameState): Move[] {
+		if (this.hasMoved || this.cell.x !== KING_FILE) return [];
+
+		const moves: Move[] = [];
+		const board = state.board;
+		const y = this.cell.y;
+
+		for (const side of Object.keys(CASTLING_SIDES) as CastlingSide[]) {
+			if (!state.castling.isAllowed(this.color, side)) continue;
+
+			const config = CASTLING_SIDES[side];
+			const rookCell = board.getCell(config.rookFromX, y);
+			const rook = rookCell.figure;
+
+			const pathClear = config.emptyX.every((x) => board.getCell(x, y).isEmpty());
+			if (!pathClear || !(rook instanceof Rook) || rook.hasMoved) continue;
+
+			moves.push(new Move(this.cell, board.getCell(config.kingToX, y), 'castle'));
+		}
+
+		return moves;
 	}
 }
