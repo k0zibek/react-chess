@@ -7,12 +7,21 @@ const INITIAL_TIME_SECONDS = 300;
 interface TimerProps {
 	currentTurn: Colors;
 	isGameOver: boolean;
+	canUndo: boolean;
 	onTimeExpired: (loser: Colors) => void;
+	undo: () => void;
 	restart: () => void;
 }
 
 /** Таймер партии: останавливается на нуле и завершает игру по времени. */
-const Timer: FC<TimerProps> = ({ currentTurn, isGameOver, onTimeExpired, restart }) => {
+const Timer: FC<TimerProps> = ({
+	currentTurn,
+	isGameOver,
+	canUndo,
+	onTimeExpired,
+	undo,
+	restart,
+}) => {
 	const [blackTime, setBlackTime] = useState(INITIAL_TIME_SECONDS);
 	const [whiteTime, setWhiteTime] = useState(INITIAL_TIME_SECONDS);
 	const timer = useRef<null | ReturnType<typeof setInterval>>(null);
@@ -69,9 +78,14 @@ const Timer: FC<TimerProps> = ({ currentTurn, isGameOver, onTimeExpired, restart
 
 	return (
 		<div className='timer-container'>
-			<button className='btn' onClick={handleRestart}>
-				Новая партия
-			</button>
+			<div className='timer-actions'>
+				<button className='btn' onClick={handleRestart}>
+					Новая партия
+				</button>
+				<button className='btn btn-secondary' onClick={undo} disabled={!canUndo || isGameOver}>
+					Отменить ход
+				</button>
+			</div>
 			<h2>Чёрные — {formatTime(blackTime)}</h2>
 			<h2>Белые — {formatTime(whiteTime)}</h2>
 		</div>

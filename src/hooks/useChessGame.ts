@@ -120,6 +120,16 @@ export function useChessGame() {
 		setTimeWinner(null);
 	}, []);
 
+	const undo = useCallback(() => {
+		if (!game.canUndo() || isGameOver) return;
+
+		game.undo();
+		dispatch({ type: 'TICK' });
+		setSelectedCell(null);
+		setLegalMoves([]);
+		setPendingPromotionMoves(null);
+	}, [game, isGameOver]);
+
 	const promotionColor = pendingPromotionMoves?.[0]?.from.figure?.color ?? null;
 
 	return {
@@ -131,10 +141,12 @@ export function useChessGame() {
 		promotionColor,
 		isGameOver,
 		timeWinner,
+		canUndo: game.canUndo(),
 		isCellAvailable,
 		click,
 		handlePromotionSelect,
 		handleTimeExpired,
+		undo,
 		restart,
 	};
 }

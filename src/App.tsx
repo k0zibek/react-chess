@@ -12,10 +12,12 @@ function App() {
 		promotionColor,
 		isGameOver,
 		timeWinner,
+		canUndo,
 		isCellAvailable,
 		click,
 		handlePromotionSelect,
 		handleTimeExpired,
+		undo,
 		restart,
 	} = useChessGame();
 
@@ -24,7 +26,9 @@ function App() {
 			<Timer
 				currentTurn={snapshot.currentTurn}
 				isGameOver={isGameOver}
+				canUndo={canUndo}
 				onTimeExpired={handleTimeExpired}
+				undo={undo}
 				restart={restart}
 			/>
 			<BoardComponent
