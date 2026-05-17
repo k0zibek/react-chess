@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { ChessGame } from '../chess/ChessGame';
 import { Cell } from '../chess/board/Cell';
-import { FigureNames, GameStatus } from '../chess/types';
+import { Colors, FigureNames, GameStatus } from '../chess/types';
 import { Move } from '../chess/Move';
 
 type ChessUiState = {
@@ -34,10 +34,13 @@ export function useChessGame() {
 	const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 	const [legalMoves, setLegalMoves] = useState<Move[]>([]);
 	const [pendingPromotionMoves, setPendingPromotionMoves] = useState<Move[] | null>(null);
+	const [timeWinner, setTimeWinner] = useState<Colors | null>(null);
 
 	const snapshot = game.getSnapshot();
 	const isGameOver =
-		snapshot.status === GameStatus.CHECKMATE || snapshot.status === GameStatus.STALEMATE;
+		snapshot.status === GameStatus.CHECKMATE ||
+		snapshot.status === GameStatus.STALEMATE ||
+		timeWinner !== null;
 
 	const availableKeys = useMemo(
 		() => new Set(legalMoves.map((move) => `${move.to.x}-${move.to.y}`)),
@@ -105,11 +108,16 @@ export function useChessGame() {
 		[availableKeys],
 	);
 
+	const handleTimeExpired = useCallback((loser: Colors) => {
+		setTimeWinner(loser === Colors.WHITE ? Colors.BLACK : Colors.WHITE);
+	}, []);
+
 	const restart = useCallback(() => {
 		dispatch({ type: 'RESTART' });
 		setSelectedCell(null);
 		setLegalMoves([]);
 		setPendingPromotionMoves(null);
+		setTimeWinner(null);
 	}, []);
 
 	const promotionColor = pendingPromotionMoves?.[0]?.from.figure?.color ?? null;
@@ -122,9 +130,11 @@ export function useChessGame() {
 		pendingPromotionMoves,
 		promotionColor,
 		isGameOver,
+		timeWinner,
 		isCellAvailable,
 		click,
 		handlePromotionSelect,
+		handleTimeExpired,
 		restart,
 	};
 }
