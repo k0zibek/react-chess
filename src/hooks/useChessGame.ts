@@ -85,9 +85,7 @@ export function useChessGame() {
 			if (selectedCell && selectedCell !== cell) {
 				const matching = legalMoves.filter((move) => move.to === cell);
 				if (matching.length === 0) {
-					setSelectedCell(
-						cell.figure?.color === snapshot.currentTurn ? cell : null,
-					);
+					setSelectedCell(cell.figure?.color === snapshot.currentTurn ? cell : null);
 					return;
 				}
 

@@ -33,15 +33,13 @@ export class Board {
 
 	/** Учитывает съеденную фигуру в списке захваченных. */
 	captureFigure(figure: Figure): void {
-		const list =
-			figure.color === Colors.BLACK ? this.lostBlackFigures : this.lostWhiteFigures;
+		const list = figure.color === Colors.BLACK ? this.lostBlackFigures : this.lostWhiteFigures;
 		list.push(figure);
 	}
 
 	/** Возвращает фигуру в список захваченных при откате хода. */
 	restoreCapturedFigure(figure: Figure): void {
-		const list =
-			figure.color === Colors.BLACK ? this.lostBlackFigures : this.lostWhiteFigures;
+		const list = figure.color === Colors.BLACK ? this.lostBlackFigures : this.lostWhiteFigures;
 		const index = list.indexOf(figure);
 		if (index !== -1) list.splice(index, 1);
 	}

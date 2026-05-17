@@ -41,10 +41,7 @@ export function clonePosition(source: Position): Position {
 	});
 
 	if (source.enPassantTarget) {
-		clone.enPassantTarget = clone.board.getCell(
-			source.enPassantTarget.x,
-			source.enPassantTarget.y,
-		);
+		clone.enPassantTarget = clone.board.getCell(source.enPassantTarget.x, source.enPassantTarget.y);
 	}
 
 	const spareBoard = new Board();

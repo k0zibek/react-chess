@@ -22,7 +22,7 @@ export function createMoveRecord(position: Position, move: Move): MoveRecord {
 		move,
 		mover,
 		capturedOnTarget: move.type === 'enPassant' ? null : move.to.figure,
-		capturedEnPassant: move.type === 'enPassant' ? move.capturedFigure ?? null : null,
+		capturedEnPassant: move.type === 'enPassant' ? (move.capturedFigure ?? null) : null,
 		capturedEnPassantCell:
 			move.type === 'enPassant' && move.capturedFigure ? move.capturedFigure.cell : null,
 		promotedPiece: null,
@@ -37,20 +37,12 @@ export function createMoveRecord(position: Position, move: Move): MoveRecord {
 }
 
 /** Обновляет права на рокировку после хода. */
-export function updateCastlingRights(
-	position: Position,
-	move: Move,
-	record: MoveRecord,
-): void {
+export function updateCastlingRights(position: Position, move: Move, record: MoveRecord): void {
 	if (move.type === 'castle' || record.mover.name === FigureNames.KING) {
 		position.castling.revokeAll(record.mover.color);
 	}
 	if (record.capturedOnTarget?.name === FigureNames.ROOK) {
-		position.castling.revokeRookSide(
-			record.capturedOnTarget.color,
-			move.to.x,
-			move.to.y,
-		);
+		position.castling.revokeRookSide(record.capturedOnTarget.color, move.to.x, move.to.y);
 	}
 	if (move.type !== 'castle' && record.mover.name === FigureNames.ROOK) {
 		position.castling.revokeRookSide(record.mover.color, move.from.x, move.from.y);
@@ -58,11 +50,7 @@ export function updateCastlingRights(
 }
 
 /** Обновляет цель для взятия на проходе. */
-export function updateEnPassantTarget(
-	position: Position,
-	move: Move,
-	record: MoveRecord,
-): void {
+export function updateEnPassantTarget(position: Position, move: Move, record: MoveRecord): void {
 	if (record.mover.name === FigureNames.PAWN && move.type === 'normal') {
 		const dy = Math.abs(move.to.y - move.from.y);
 		if (dy === 2) {

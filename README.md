@@ -20,13 +20,15 @@ npm run dev
 
 ## Скрипты
 
-| Команда | Описание |
-|---------|----------|
-| `npm run dev` | Dev-сервер с HMR |
-| `npm run build` | Production-сборка |
-| `npm run test` | Unit-тесты (Vitest) |
+| Команда                 | Описание                     |
+| ----------------------- | ---------------------------- |
+| `npm run dev`           | Dev-сервер с HMR             |
+| `npm run build`         | Production-сборка            |
+| `npm run test`          | Unit-тесты (Vitest)          |
 | `npm run test:coverage` | Покрытие домена `src/chess/` |
-| `npm run lint` | ESLint |
+| `npm run lint`          | ESLint (type-aware)          |
+| `npm run format`        | Prettier — форматирование    |
+| `npm run format:check`  | Проверка форматирования      |
 
 ## Структура
 

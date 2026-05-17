@@ -2,13 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ChessGame } from '../ChessGame';
 import { getLegalMoves } from '../rules/legalMoves';
 import { Colors, FigureNames } from '../types';
-import {
-	createEmptyPosition,
-	hasMove,
-	placePiece,
-	setEnPassantTarget,
-	setTurn,
-} from './testUtils';
+import { createEmptyPosition, hasMove, placePiece, setEnPassantTarget, setTurn } from './testUtils';
 
 describe('en passant', () => {
 	it('предлагает взятие на проходе', () => {

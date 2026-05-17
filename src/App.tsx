@@ -23,7 +23,7 @@ function App() {
 	} = useChessGame();
 
 	return (
-		<div className='app container'>
+		<div className="app container">
 			<Timer
 				whiteTime={whiteTime}
 				blackTime={blackTime}
@@ -43,8 +43,8 @@ function App() {
 				handlePromotionSelect={handlePromotionSelect}
 			/>
 			<div>
-				<LostFigures title='Съеденные чёрные' figures={snapshot.board.lostBlackFigures} />
-				<LostFigures title='Съеденные белые' figures={snapshot.board.lostWhiteFigures} />
+				<LostFigures title="Съеденные чёрные" figures={snapshot.board.lostBlackFigures} />
+				<LostFigures title="Съеденные белые" figures={snapshot.board.lostWhiteFigures} />
 			</div>
 		</div>
 	);

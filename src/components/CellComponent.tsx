@@ -18,7 +18,7 @@ const CellComponent = forwardRef<HTMLDivElement, CellComponentProps>(
 		return (
 			<div
 				ref={ref}
-				role='gridcell'
+				role="gridcell"
 				tabIndex={isFocused ? 0 : -1}
 				aria-selected={selected}
 				aria-label={getCellAriaLabel(
@@ -31,10 +31,8 @@ const CellComponent = forwardRef<HTMLDivElement, CellComponentProps>(
 				className={`cell ${cell.color} ${selected ? 'selected' : ''} ${isCapture ? 'capture' : ''} ${isFocused ? 'focused' : ''}`}
 				onClick={() => click(cell)}
 			>
-				{isAvailable && !cell.figure && <div className='available'></div>}
-				{cell.figure?.logo && (
-					<img src={cell.figure.logo} alt='' aria-hidden='true' />
-				)}
+				{isAvailable && !cell.figure && <div className="available"></div>}
+				{cell.figure?.logo && <img src={cell.figure.logo} alt="" aria-hidden="true" />}
 			</div>
 		);
 	},

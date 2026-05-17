@@ -11,21 +11,14 @@ interface TimerProps {
 }
 
 /** Панель таймера и управления партией. */
-const Timer: FC<TimerProps> = ({
-	whiteTime,
-	blackTime,
-	canUndo,
-	isGameOver,
-	undo,
-	restart,
-}) => {
+const Timer: FC<TimerProps> = ({ whiteTime, blackTime, canUndo, isGameOver, undo, restart }) => {
 	return (
-		<div className='timer-container'>
-			<div className='timer-actions'>
-				<button className='btn' onClick={restart}>
+		<div className="timer-container">
+			<div className="timer-actions">
+				<button className="btn" onClick={restart}>
 					Новая партия
 				</button>
-				<button className='btn btn-secondary' onClick={undo} disabled={!canUndo || isGameOver}>
+				<button className="btn btn-secondary" onClick={undo} disabled={!canUndo || isGameOver}>
 					Отменить ход
 				</button>
 			</div>

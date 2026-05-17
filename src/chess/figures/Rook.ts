@@ -19,11 +19,8 @@ export class Rook extends Figure {
 	}
 
 	getPseudoLegalMoves(ctx: MoveContext): Move[] {
-		return SlidingMover.getMoves(
-			this.cell,
-			ctx.board,
-			ROOK_DIRECTIONS,
-			(target) => this.canTargetCell(target),
+		return SlidingMover.getMoves(this.cell, ctx.board, ROOK_DIRECTIONS, (target) =>
+			this.canTargetCell(target),
 		);
 	}
 
