@@ -1,0 +1,36 @@
+:root {
+	--bg-page: #1f1a24;
+	--bg-surface: #2d2635;
+	--bg-surface-elevated: #3a3245;
+	--board-light: #f0e6f6;
+	--board-dark: #9b7bb8;
+	--board-last-light: #ddd0eb;
+	--board-last-dark: #7d6594;
+	--accent: #b8a0d4;
+	--accent-muted: rgba(184, 160, 212, 0.35);
+	--danger: #e07a7a;
+	/* Подсветки клеток */
+	--highlight-selected-ring: #e8c547;
+	--highlight-selected-fill-light: rgba(232, 197, 71, 0.28);
+	--highlight-selected-fill-dark: rgba(232, 197, 71, 0.22);
+	--highlight-capture-ring: #e07a5a;
+	--highlight-capture-fill-light: rgba(224, 122, 90, 0.22);
+	--highlight-capture-fill-dark: rgba(224, 122, 90, 0.3);
+	--highlight-move-dot: rgba(100, 180, 160, 0.85);
+	--highlight-check-ring: #f5a623;
+	--highlight-check-fill-light: rgba(245, 166, 35, 0.38);
+	--highlight-check-fill-dark: rgba(245, 166, 35, 0.32);
+	--highlight-mate-ring: #e04565;
+	--highlight-mate-fill-light: rgba(224, 69, 101, 0.48);
+	--highlight-mate-fill-dark: rgba(224, 69, 101, 0.42);
+	--text-primary: #ede8f2;
+	--text-muted: #a89bb8;
+	--btn-primary: #6b5a7d;
+	--btn-secondary: #4a4258;
+	--border-subtle: rgba(237, 232, 242, 0.08);
+	--cell-size: clamp(40px, 12vw, 64px);
+	--coord-size: 18px;
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--shadow-surface: 0 4px 24px rgba(0, 0, 0, 0.35);
+}

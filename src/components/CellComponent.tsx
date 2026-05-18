@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { getCellAriaLabel } from '../chess/boardCoords';
 import { Cell } from '../chess/board/Cell';
+import { Colors } from '../chess/types';
 
 interface CellComponentProps {
 	cell: Cell;
@@ -8,12 +9,16 @@ interface CellComponentProps {
 	selected: boolean;
 	isAvailable: boolean;
 	isFocused: boolean;
+	isLastMove: boolean;
+	isInCheck: boolean;
+	isInCheckmate: boolean;
 }
 
 /** Одна клетка доски с фигурой, подсветкой и a11y-атрибутами. */
 const CellComponent = forwardRef<HTMLDivElement, CellComponentProps>(
-	({ cell, click, selected, isAvailable, isFocused }, ref) => {
+	({ cell, click, selected, isAvailable, isFocused, isLastMove, isInCheck, isInCheckmate }, ref) => {
 		const isCapture = isAvailable && !!cell.figure;
+		const shade = cell.color === Colors.WHITE ? 'light' : 'dark';
 
 		return (
 			<div
@@ -28,10 +33,21 @@ const CellComponent = forwardRef<HTMLDivElement, CellComponentProps>(
 					selected,
 					isAvailable,
 				)}
-				className={`cell ${cell.color} ${selected ? 'selected' : ''} ${isCapture ? 'capture' : ''} ${isFocused ? 'focused' : ''}`}
+				className={[
+					'cell',
+					`cell--${shade}`,
+					selected ? 'cell--selected' : '',
+					isCapture ? 'cell--capture' : '',
+					isFocused ? 'cell--focused' : '',
+					isLastMove ? 'cell--last-move' : '',
+					isInCheck ? 'cell--in-check' : '',
+					isInCheckmate ? 'cell--in-checkmate' : '',
+				]
+					.filter(Boolean)
+					.join(' ')}
 				onClick={() => click(cell)}
 			>
-				{isAvailable && !cell.figure && <div className="available"></div>}
+				{isAvailable && !cell.figure && <span className="cell__dot" aria-hidden="true" />}
 				{cell.figure?.logo && <img src={cell.figure.logo} alt="" aria-hidden="true" />}
 			</div>
 		);

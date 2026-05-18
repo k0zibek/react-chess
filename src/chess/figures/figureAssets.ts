@@ -1,16 +1,16 @@
 import { Colors, FigureNames } from '../types';
-import blackBishop from '../../assets/black-bishop.png';
-import blackKing from '../../assets/black-king.png';
-import blackKnight from '../../assets/black-knight.png';
-import blackPawn from '../../assets/black-pawn.png';
-import blackQueen from '../../assets/black-queen.png';
-import blackRook from '../../assets/black-rook.png';
-import whiteBishop from '../../assets/white-bishop.png';
-import whiteKing from '../../assets/white-king.png';
-import whiteKnight from '../../assets/white-knight.png';
-import whitePawn from '../../assets/white-pawn.png';
-import whiteQueen from '../../assets/white-queen.png';
-import whiteRook from '../../assets/white-rook.png';
+import blackBishop from '../../assets/black-bishop.svg';
+import blackKing from '../../assets/black-king.svg';
+import blackKnight from '../../assets/black-knight.svg';
+import blackPawn from '../../assets/black-pawn.svg';
+import blackQueen from '../../assets/black-queen.svg';
+import blackRook from '../../assets/black-rook.svg';
+import whiteBishop from '../../assets/white-bishop.svg';
+import whiteKing from '../../assets/white-king.svg';
+import whiteKnight from '../../assets/white-knight.svg';
+import whitePawn from '../../assets/white-pawn.svg';
+import whiteQueen from '../../assets/white-queen.svg';
+import whiteRook from '../../assets/white-rook.svg';
 
 const LOGOS: Record<Colors, Partial<Record<FigureNames, string>>> = {
 	[Colors.WHITE]: {

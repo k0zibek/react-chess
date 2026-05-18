@@ -5,6 +5,16 @@ export function toAlgebraic(x: number, y: number): string {
 	return `${file}${rank}`;
 }
 
+/** Буква файла (a–h) по координате x. */
+export function fileLabel(x: number): string {
+	return String.fromCharCode(97 + x);
+}
+
+/** Цифра ранга (1–8) по координате y. */
+export function rankLabel(y: number): string {
+	return String(8 - y);
+}
+
 /** Описание клетки для screen reader. */
 export function getCellAriaLabel(
 	x: number,

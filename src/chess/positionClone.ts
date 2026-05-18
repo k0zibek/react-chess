@@ -21,6 +21,12 @@ export function clonePosition(source: Position): Position {
 	clone.currentTurn = source.currentTurn;
 	clone.status = source.status;
 	clone.endState = source.endState;
+	clone.lastMove = source.lastMove
+		? {
+				from: { ...source.lastMove.from },
+				to: { ...source.lastMove.to },
+			}
+		: null;
 	clone.castling = source.castling.clone();
 
 	forEachCell(source.board, (cell) => {

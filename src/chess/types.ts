@@ -24,6 +24,18 @@ export enum GameStatus {
 
 export type MoveType = 'normal' | 'castle' | 'enPassant' | 'promotion';
 
+/** Координаты клетки на доске. */
+export interface BoardSquare {
+	x: number;
+	y: number;
+}
+
+/** Подсветка последнего хода в UI. */
+export interface LastMove {
+	from: BoardSquare;
+	to: BoardSquare;
+}
+
 /** Единое состояние конца партии для UI и домена. */
 export type GameEndState =
 	| { kind: 'ongoing' }

@@ -6,17 +6,26 @@ interface LostFiguresProps {
 	figures: Figure[];
 }
 
-/** Список съеденных фигур. */
+/** Список съеденных фигур одного цвета. */
 const LostFigures: FC<LostFiguresProps> = ({ title, figures }) => {
 	return (
-		<div className="lost">
-			<h3>{title}</h3>
-			{figures.map((figure, index) => (
-				<div key={`${figure.name}-${index}`}>
-					{figure.name} {figure.logo && <img width={20} height={20} src={figure.logo} alt="" />}
-				</div>
-			))}
-		</div>
+		<section className="captured-group">
+			<h3 className="captured-group__title">{title}</h3>
+			<div className="captured-group__pieces" aria-label={title}>
+				{figures.map((figure, index) =>
+					figure.logo ? (
+						<img
+							key={`${figure.name}-${index}`}
+							className="captured-group__piece"
+							src={figure.logo}
+							alt=""
+							width={28}
+							height={28}
+						/>
+					) : null,
+				)}
+			</div>
+		</section>
 	);
 };
 

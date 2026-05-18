@@ -7,7 +7,7 @@ import { applyMove } from './moves/applyMove';
 import { Position } from './Position';
 import { updateGameStatus } from './rules/gameStatus';
 import { getLegalMoves, isLegalMove } from './rules/legalMoves';
-import { Colors, GameEndState, GameStatus } from './types';
+import { Colors, GameEndState, GameStatus, LastMove } from './types';
 
 /** Снимок позиции для отображения в UI. */
 export interface PositionSnapshot {
@@ -15,6 +15,7 @@ export interface PositionSnapshot {
 	currentTurn: Colors;
 	status: GameStatus;
 	endState: GameEndState;
+	lastMove: LastMove | null;
 }
 
 /** Единая точка входа в шахматную логику. */
@@ -36,6 +37,7 @@ export class ChessGame {
 			currentTurn: this.position.currentTurn,
 			status: this.position.status,
 			endState: this.position.endState,
+			lastMove: this.position.lastMove,
 		};
 	}
 
@@ -60,6 +62,10 @@ export class ChessGame {
 			this.history.shift();
 		}
 		applyMove(this.position, move);
+		this.position.lastMove = {
+			from: { x: move.from.x, y: move.from.y },
+			to: { x: move.to.x, y: move.to.y },
+		};
 		this.position.switchTurn();
 		updateGameStatus(this.position);
 		return true;

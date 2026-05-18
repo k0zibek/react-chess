@@ -15,6 +15,15 @@ describe('positionClone', () => {
 		expect(clone.currentTurn).toBe(source.currentTurn);
 		expect(clone.status).toBe(source.status);
 		expect(clone.castling.whiteKingside).toBe(true);
+		expect(clone.lastMove).toBeNull();
+	});
+
+	it('клонирует lastMove', () => {
+		const source = Position.createInitial();
+		source.lastMove = { from: { x: 4, y: 6 }, to: { x: 4, y: 4 } };
+		const clone = clonePosition(source);
+
+		expect(clone.lastMove).toEqual({ from: { x: 4, y: 6 }, to: { x: 4, y: 4 } });
 	});
 
 	it('клонирует позицию после взятия', () => {
@@ -55,6 +64,7 @@ describe('ChessGame undo', () => {
 
 		expect(game.undo()).toBe(true);
 		expect(game.getSnapshot().board.getCell(4, 6).figure?.name).toBe(FigureNames.PAWN);
+		expect(game.getSnapshot().lastMove).toBeNull();
 	});
 
 	it('canUndo возвращает false в начальной позиции', () => {

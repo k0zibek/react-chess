@@ -1,6 +1,7 @@
 import BoardComponent from './components/BoardComponent';
 import './styles/App.css';
-import LostFigures from './components/LostFigures';
+import CapturedPanel from './components/CapturedPanel';
+import GameHeader from './components/GameHeader';
 import Timer from './components/Timer';
 import { useChessGame } from './hooks/useChessGame';
 
@@ -23,26 +24,32 @@ function App() {
 
 	return (
 		<div className="app container">
-			<Timer
-				whiteTime={whiteTime}
-				blackTime={blackTime}
-				isGameOver={isGameOver}
-				canUndo={canUndo}
-				undo={undo}
-				restart={restart}
-			/>
-			<BoardComponent
-				snapshot={snapshot}
-				selectedCell={selectedCell}
-				pendingPromotionMoves={pendingPromotionMoves}
-				promotionColor={promotionColor}
-				isCellAvailable={isCellAvailable}
-				click={click}
-				handlePromotionSelect={handlePromotionSelect}
-			/>
-			<div>
-				<LostFigures title="Съеденные чёрные" figures={snapshot.board.lostBlackFigures} />
-				<LostFigures title="Съеденные белые" figures={snapshot.board.lostWhiteFigures} />
+			<div className="app-layout">
+				<Timer
+					whiteTime={whiteTime}
+					blackTime={blackTime}
+					currentTurn={snapshot.currentTurn}
+					isGameOver={isGameOver}
+					canUndo={canUndo}
+					undo={undo}
+					restart={restart}
+				/>
+				<main className="app-main">
+					<GameHeader currentTurn={snapshot.currentTurn} endState={snapshot.endState} />
+					<BoardComponent
+						snapshot={snapshot}
+						selectedCell={selectedCell}
+						pendingPromotionMoves={pendingPromotionMoves}
+						promotionColor={promotionColor}
+						isCellAvailable={isCellAvailable}
+						click={click}
+						handlePromotionSelect={handlePromotionSelect}
+					/>
+				</main>
+				<CapturedPanel
+					lostBlack={snapshot.board.lostBlackFigures}
+					lostWhite={snapshot.board.lostWhiteFigures}
+				/>
 			</div>
 		</div>
 	);
